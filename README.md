@@ -11,15 +11,17 @@ Readable makes use of:
 
 ## Installation
 
-Clone the repository and use npm or yarn to install the dependencies and run the application.
+Clone the repository and use `npm` or `yarn` to install the dependencies and run the application.
 
 ```bash
-# Run API server
+# Clone the repository
 $ git clone git@github.com:marichelle/reactnd-project-readable.git
+
+# Run API Server:
 $ cd reactnd-project-readable/backend
 $ yarn && yarn start
 
-# Run App
+# Run Application:
 $ cd reactnd-project-readable/frontend
 $ yarn && yarn start
 ```
