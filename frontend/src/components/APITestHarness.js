@@ -3,8 +3,12 @@ import React, { Component } from 'react';
 import { generateUID } from '../utils/helper';
 import {
   addPost,
+  addVoteToPost,
+  deletePost,
+  editPost,
   getAllCategories,
   getAllPosts,
+  getPostById,
   getPostsByCategory,
 } from '../utils/api';
 
@@ -19,8 +23,8 @@ export default class APITestHarness extends Component {
     this.handleGetPosts();
   }
 
-  handleAddPost = (evt, cat) => {
-    evt.preventDefault();
+  handleAddPost = (e, cat) => {
+    e.preventDefault();
 
     const post = {
       id: generateUID(),
@@ -30,9 +34,40 @@ export default class APITestHarness extends Component {
       title: `This is a test post in the ${cat} category`,
       body:
         'Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero, obcaecati? Obcaecati voluptate, libero illum suscipit adipisci voluptates recusandae quis quod animi ipsam nam natus nisi in sunt molestiae tempore eligendi!',
+      voteScore: 1,
     };
 
-    addPost(post);
+    addPost(post).then(() =>
+      this.setState((prevState) => ({
+        posts: [...prevState.posts].concat(post),
+      }))
+    );
+  };
+
+  handleDeletePost = (e, id) => {
+    e.preventDefault();
+
+    deletePost(id).then(() =>
+      this.setState((prevState) => ({
+        posts: prevState.posts.filter((p) => p.id !== id),
+      }))
+    );
+  };
+
+  handleEditPost = (e, id) => {
+    e.preventDefault();
+
+    const post = {
+      author: 'mayae',
+    };
+
+    editPost(id, post).then(() =>
+      this.setState((prevState) => ({
+        posts: prevState.posts.map((p) =>
+          p.id !== id ? p : { ...p, author: post.author }
+        ),
+      }))
+    );
   };
 
   handleGetCategories = () =>
@@ -44,6 +79,14 @@ export default class APITestHarness extends Component {
       }));
     });
 
+  handleGetPostById = (e, id) => {
+    e.preventDefault();
+
+    getPostById(id).then((result) => {
+      console.log('post', result);
+    });
+  };
+
   handleGetPosts = () =>
     getAllPosts().then((result) => {
       console.log('posts', result);
@@ -53,8 +96,8 @@ export default class APITestHarness extends Component {
       }));
     });
 
-  handleGetPostsByCategory = (evt, cat) => {
-    evt.preventDefault();
+  handleGetPostsByCategory = (e, cat) => {
+    e.preventDefault();
 
     if (cat !== undefined) {
       getPostsByCategory(cat).then((result) => {
@@ -67,6 +110,24 @@ export default class APITestHarness extends Component {
     } else {
       this.handleGetPosts();
     }
+  };
+
+  handleVote = (e, id, vote) => {
+    e.preventDefault();
+
+    addVoteToPost(id, vote).then(() =>
+      this.setState((prevState) => ({
+        posts: prevState.posts.map((post) =>
+          post.id !== id
+            ? post
+            : {
+                ...post,
+                voteScore:
+                  vote === 'upVote' ? post.voteScore + 1 : post.voteScore - 1,
+              }
+        ),
+      }))
+    );
   };
 
   render() {
@@ -104,7 +165,36 @@ export default class APITestHarness extends Component {
           {posts.length !== 0 ? (
             posts.map((post) => (
               <li key={post.id}>
-                {post.author} - {post.category} - {post.title}|
+                <div>
+                  <a
+                    href="/#"
+                    onClick={(e) => this.handleGetPostById(e, post.id)}
+                  >
+                    {post.title} - {post.author} - {post.voteScore}
+                  </a>
+                  <br />
+                  <a
+                    href="/#"
+                    onClick={(e) => this.handleVote(e, post.id, 'upVote')}
+                  >
+                    upvote
+                  </a>
+                  -
+                  <a
+                    href="/#"
+                    onClick={(e) => this.handleVote(e, post.id, 'downVote')}
+                  >
+                    downvote
+                  </a>
+                  -
+                  <a href="/#" onClick={(e) => this.handleEditPost(e, post.id)}>
+                    edit
+                  </a>
+                  -
+                  <a href="/#" onClick={(e) => this.handleDeletePost(e, post.id)}>
+                    delete
+                  </a>
+                </div>
               </li>
             ))
           ) : (
