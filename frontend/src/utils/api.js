@@ -1,4 +1,4 @@
-const api = 'http://localhost:3001/';
+const api = 'http://localhost:3001';
 
 // Generate a unique token for storing your bookshelf data on the backend server.
 const token = localStorage.token
@@ -35,8 +35,8 @@ export const getAllPosts = () =>
 // body - [String]
 // author - [String]
 // category - Any of the categories listed in categories.js.
-export const addPost = (post) =>
-  fetch(`${api}/posts`, {
+export const addPost = (post) => {
+  return fetch(`${api}/posts`, {
     method: 'POST',
     headers: {
       ...headers,
@@ -44,6 +44,7 @@ export const addPost = (post) =>
     },
     body: JSON.stringify(post),
   });
+};
 
 // GET /posts/:id
 export const getPostById = (id) =>
@@ -100,8 +101,8 @@ export const getComments = (id) =>
 // body - [String]
 // author - [String]
 // parentId - Should match a post id in the database.
-export const addPost = (comment) =>
-  fetch(`${api}/comments`, {
+export const addComment = (comment) => {
+  return fetch(`${api}/comments`, {
     method: 'POST',
     headers: {
       ...headers,
@@ -109,6 +110,7 @@ export const addPost = (comment) =>
     },
     body: JSON.stringify(comment),
   });
+};
 
 // GET /comments/:id
 export const getComment = (id) =>
