@@ -10,6 +10,27 @@ const headers = {
   Authorization: token,
 };
 
+export const getInitialData = async () => {
+  const categories = await getAllCategories();
+  const posts = await getAllPostsWithComments();
+
+  return {
+    categories,
+    posts,
+  };
+};
+
+const getAllPostsWithComments = async () => {
+  const posts = await getAllPosts();
+
+  const postsWithComments = posts.map(async (post) => ({
+    ...post,
+    comments: await getComments(post.id),
+  }));
+
+  return Promise.all(postsWithComments);
+};
+
 // GET /categories
 export const getAllCategories = () =>
   fetch(`${api}/categories`, { headers })
