@@ -8,13 +8,14 @@ import { handleInitialData } from '../actions/shared';
 
 class App extends Component {
   componentDidMount() {
-    this.props.dispatch(handleInitialData());
+    this.props.handleInitialData();
   }
 
   render() {
     return (
       <>
         <Header />
+        <div className="ui hidden divider" />
         <Dashboard />
       </>
     );
@@ -22,9 +23,7 @@ class App extends Component {
 }
 
 const mapStateToProps = (state) => {
-  console.log('state', state);
-
   return state;
 };
 
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps, { handleInitialData })(App);
