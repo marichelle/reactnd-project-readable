@@ -2,27 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 class Categories extends Component {
-  state = {
-    activeCategory: 'all',
-  };
-
-  handleOnClick = (e, id) => {
-    e.preventDefault();
-
-    this.setState(() => ({
-      activeCategory: id,
-    }));
-  };
-
   render() {
-    const { categories } = this.props;
-    const { activeCategory } = this.state;
+    const { categories, category, onClick } = this.props;
 
     return (
-      <div className="ui secondary vertical teal pointing menu">
+      <div className="ui secondary vertical blue pointing menu">
         <a
-          className={'item' + (activeCategory === 'all' ? ' active' : '')}
-          onClick={(e) => this.handleOnClick(e, 'all')}
+          className={'item' + (category === 'all' ? ' active' : '')}
+          onClick={(e) => onClick(e, 'all')}
         >
           all
         </a>
@@ -30,8 +17,8 @@ class Categories extends Component {
           categories.map((cat) => (
             <a
               key={cat.path}
-              className={'item' + (activeCategory === cat.path ? ' active' : '')}
-              onClick={(e) => this.handleOnClick(e, cat.path)}
+              className={'item' + (category === cat.path ? ' active' : '')}
+              onClick={(e) => onClick(e, cat.path)}
             >
               {cat.name}
             </a>

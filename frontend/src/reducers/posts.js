@@ -7,27 +7,39 @@ import {
   FETCH_POSTS,
 } from '../actions/posts';
 
-export default function posts(state = [], action) {
+export default function posts(posts = [], action) {
+  const { payload } = action;
+
   switch (action.type) {
     case ADD_POST:
-      return state;
+      return posts;
 
     case ADD_VOTE_TO_POST:
-      return state;
+      return posts.map((post) =>
+        post.id !== payload.id
+          ? post
+          : {
+              ...post,
+              voteScore:
+                payload.vote === 'upVote'
+                  ? post.voteScore + 1
+                  : post.voteScore - 1,
+            }
+      );
 
     case DELETE_POST:
-      return state;
+      return posts;
 
     case EDIT_POST:
-      return state;
+      return posts;
 
     case FETCH_POST:
-      return state;
+      return posts;
 
     case FETCH_POSTS:
-      return [...state, ...action.payload];
+      return [...posts, ...payload];
 
     default:
-      return state;
+      return posts;
   }
 }
