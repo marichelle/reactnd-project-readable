@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 import Categories from './Categories';
-import Posts from './Posts';
+import PostList from './PostList';
 import SortPosts from './SortPosts';
 
 export default class Dashboard extends Component {
@@ -37,7 +37,7 @@ export default class Dashboard extends Component {
               </Link>
             </div>
           </div>
-          <Posts category={category} sort={sort} />
+          <PostList category={category} sort={sort} />
         </div>
         <div className="ui four wide column">
           <SortPosts sort={sort} onClick={this.handleSortSelection} />

@@ -32,7 +32,7 @@ class Posts extends Component {
               </div>
               <div className="ui segment">
                 <div className="ui grid">
-                  <div className="one wide column">
+                  <div className="two wide right aligned column">
                     <a
                       href="/#"
                       onClick={(e) =>
@@ -41,7 +41,9 @@ class Posts extends Component {
                     >
                       <i className="chevron up large icon"></i>
                     </a>
-                    <a className="ui blue circular label">{post.voteScore}</a>
+                    <span className="ui blue circular large label">
+                      {post.voteScore}
+                    </span>
                     <a
                       href="/#"
                       onClick={(e) =>
@@ -51,7 +53,7 @@ class Posts extends Component {
                       <i className="chevron down large icon"></i>
                     </a>
                   </div>
-                  <div className="fifteen wide column">
+                  <div className="fourteen wide column">
                     <p>{post.body}</p>
                   </div>
                 </div>
