@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-import { generateUID } from '../utils/helper';
 import {
   addPost,
   addVoteToPost,
@@ -27,19 +26,16 @@ export default class APITestHarness extends Component {
     e.preventDefault();
 
     const post = {
-      id: generateUID(),
       category: cat,
-      timestamp: Date.now(),
       author: 'marichelle',
       title: `This is a test post in the ${cat} category`,
       body:
         'Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero, obcaecati? Obcaecati voluptate, libero illum suscipit adipisci voluptates recusandae quis quod animi ipsam nam natus nisi in sunt molestiae tempore eligendi!',
-      voteScore: 1,
     };
 
-    addPost(post).then(() =>
+    addPost(post).then((data) =>
       this.setState((prevState) => ({
-        posts: [...prevState.posts].concat(post),
+        posts: [...prevState.posts].concat(data),
       }))
     );
   };

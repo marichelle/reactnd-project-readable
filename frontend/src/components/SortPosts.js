@@ -3,7 +3,7 @@ import React from 'react';
 const sortTypes = [
   {
     key: 'date',
-    name: 'Date',
+    name: 'Most Recent',
   },
   {
     key: 'comments',

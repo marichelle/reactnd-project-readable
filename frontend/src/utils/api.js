@@ -1,3 +1,5 @@
+import { generateUID } from './helper';
+
 const api = 'http://localhost:3001';
 
 // Generate a unique token for storing your bookshelf data on the backend server.
@@ -57,14 +59,22 @@ export const getAllPosts = () =>
 // author - [String]
 // category - Any of the categories listed in categories.js.
 export const addPost = (post) => {
+  const newPost = {
+    id: generateUID(),
+    timestamp: Date.now(),
+    ...post,
+  };
+
   return fetch(`${api}/posts`, {
     method: 'POST',
     headers: {
       ...headers,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(post),
-  });
+    body: JSON.stringify(newPost),
+  })
+    .then((res) => res.json())
+    .then((data) => data);
 };
 
 // GET /posts/:id

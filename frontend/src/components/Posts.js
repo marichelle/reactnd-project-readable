@@ -1,36 +1,38 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
-import { addVoteToPost } from '../actions/posts';
+import { handleAddVoteToPost, handleRemovePost } from '../actions/shared';
 import { formatDate } from '../utils/helper';
 
 class Posts extends Component {
   handleAddVoteToPost = (e, id, vote) => {
     e.preventDefault();
 
-    this.props.addVoteToPost(id, vote);
+    this.props.handleAddVoteToPost(id, vote);
+  };
+
+  handleDeletePost = (e, id) => {
+    e.preventDefault();
+
+    this.props.handleRemovePost(id);
   };
 
   render() {
     const { posts } = this.props;
 
     return (
-      <div className="ui items">
+      <>
         {posts.length > 0 &&
           posts.map((post) => (
-            <Fragment key={post.id}>
-              <div className="item">
-                <div className="content">
-                  <a className="header">{post.title}</a>
-                  <div className="meta">
-                    <span className="cinema">
-                      {post.author} | {formatDate(post.timestamp)}
-                    </span>
-                  </div>
-                  <div className="description">
-                    <p>{post.body}</p>
-                  </div>
-                  <div className="extra">
+            <div key={post.id} className="ui segments">
+              <div className="ui segment">
+                <h3>{post.title}</h3>
+                Posted by {post.author} on {formatDate(post.timestamp)}
+              </div>
+              <div className="ui segment">
+                <div className="ui grid">
+                  <div className="one wide column">
                     <a
                       href="/#"
                       onClick={(e) =>
@@ -48,16 +50,35 @@ class Posts extends Component {
                     >
                       <i className="chevron down large icon"></i>
                     </a>
-                    <div className="ui label">{post.commentCount} comments</div>
-                    <i className="trash alternate outline large right floated icon"></i>
-                    <i className="edit outline large right floated icon"></i>
+                  </div>
+                  <div className="fifteen wide column">
+                    <p>{post.body}</p>
                   </div>
                 </div>
               </div>
-              <div className="ui divider" />
-            </Fragment>
+              <div className="ui horizontal segments">
+                <div className="ui segment">
+                  <div className="ui grid">
+                    <div className="eight wide column">
+                      <div className="ui label">{post.commentCount} comments</div>
+                    </div>
+                    <div className="eight wide right aligned column">
+                      <Link to={`/post/edit/${post.id}`}>
+                        <i className="edit outline large icon"></i>
+                      </Link>
+                      <a
+                        href="/#"
+                        onClick={(e) => this.handleDeletePost(e, post.id)}
+                      >
+                        <i className="trash alternate outline large icon"></i>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           ))}
-      </div>
+      </>
     );
   }
 }
@@ -73,15 +94,18 @@ const mapStateToProps = ({ posts }, { category, sort }) => {
       break;
 
     default:
-      posts.sort((a, b) => a.timestamp - b.timestamp);
+      posts.sort((a, b) => b.timestamp - a.timestamp);
   }
 
   return {
     posts:
-      category !== 'all'
+      category !== undefined
         ? posts.filter((post) => post.category === category)
         : posts,
   };
 };
 
-export default connect(mapStateToProps, { addVoteToPost })(Posts);
+export default connect(mapStateToProps, {
+  handleAddVoteToPost,
+  handleRemovePost,
+})(Posts);

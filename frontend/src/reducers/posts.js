@@ -1,10 +1,10 @@
 import {
   ADD_POST,
   ADD_VOTE_TO_POST,
-  DELETE_POST,
   EDIT_POST,
   FETCH_POST,
   FETCH_POSTS,
+  DELETE_POST,
 } from '../actions/posts';
 
 export default function posts(posts = [], action) {
@@ -12,7 +12,7 @@ export default function posts(posts = [], action) {
 
   switch (action.type) {
     case ADD_POST:
-      return posts;
+      return [...posts].concat(payload.post);
 
     case ADD_VOTE_TO_POST:
       return posts.map((post) =>
@@ -28,16 +28,18 @@ export default function posts(posts = [], action) {
       );
 
     case DELETE_POST:
-      return posts;
+      return posts.filter((post) => post.id !== payload.id);
 
     case EDIT_POST:
-      return posts;
+      return posts.map((p) =>
+        p.id !== payload.id ? p : { ...p, ...payload.post }
+      );
 
     case FETCH_POST:
       return posts;
 
     case FETCH_POSTS:
-      return [...posts, ...payload];
+      return [...posts, ...payload.posts];
 
     default:
       return posts;

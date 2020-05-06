@@ -1,27 +1,28 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 class Categories extends Component {
   render() {
-    const { categories, category, onClick } = this.props;
+    const { categories, category } = this.props;
 
     return (
       <div className="ui secondary vertical blue pointing menu">
-        <a
-          className={'item' + (category === 'all' ? ' active' : '')}
-          onClick={(e) => onClick(e, 'all')}
+        <Link
+          to="/"
+          className={'item' + (category === undefined ? ' active' : '')}
         >
           all
-        </a>
+        </Link>
         {categories.length &&
           categories.map((cat) => (
-            <a
-              key={cat.path}
+            <Link
               className={'item' + (category === cat.path ? ' active' : '')}
-              onClick={(e) => onClick(e, cat.path)}
+              key={cat.path}
+              to={`/${cat.path}`}
             >
               {cat.name}
-            </a>
+            </Link>
           ))}
       </div>
     );
