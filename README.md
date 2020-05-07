@@ -7,7 +7,6 @@ Readable makes use of:
 - React
 - Redux
 - React Router
-- Styled Components
 
 ## Installation
 
