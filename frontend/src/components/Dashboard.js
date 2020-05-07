@@ -31,9 +31,10 @@ export default class Dashboard extends Component {
           <div className="ui grid">
             <div className="sixteen wide column">
               <Link to="/post/add">
-                <button className="ui right floated primary button">
-                  Add New Post
-                </button>
+                <div className="ui primary submit labeled icon right floated button">
+                  <i className="icon edit"></i>
+                  Add Post
+                </div>
               </Link>
             </div>
           </div>

@@ -1,25 +1,27 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
 
+import Error404 from './Error404';
 import { handleAddPost, handleEditPost } from '../actions/shared';
+import { getPostById } from '../utils/api';
 
 class PostForm extends Component {
   state = {
-    redirect: null,
     category: '',
     author: '',
     title: '',
     body: '',
   };
 
-  componentDidMount() {
-    if (Object.entries(this.props.post).length !== 0) {
+  async componentDidMount() {
+    if (this.props.id) {
+      const post = await getPostById(this.props.id);
+
       this.setState(() => ({
-        category: this.props.post.category,
-        author: this.props.post.author,
-        title: this.props.post.title,
-        body: this.props.post.body,
+        category: post.category,
+        author: post.author,
+        title: post.title,
+        body: post.body,
       }));
     }
   }
@@ -36,10 +38,10 @@ class PostForm extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
 
-    const { form, handleAddPost, handleEditPost, post } = this.props;
+    const { handleAddPost, handleEditPost, id } = this.props;
     const { category, author, title, body } = this.state;
 
-    if (form === 'add') {
+    if (id === undefined) {
       handleAddPost({
         category,
         author,
@@ -47,16 +49,16 @@ class PostForm extends Component {
         body,
       });
     } else {
-      handleEditPost(post.id, {
+      handleEditPost(id, {
         title,
         body,
       });
     }
 
+    this.props.history.goBack();
+
     // reset state
     this.setState(() => ({
-      redirect:
-        post.id === undefined ? `/${category}` : `/${category}/${post.id}`,
       category: '',
       author: '',
       title: '',
@@ -65,21 +67,20 @@ class PostForm extends Component {
   };
 
   render() {
-    const { form } = this.props;
-    const { redirect, category, author, title, body } = this.state;
+    const { id } = this.props;
+    const { category, author, title, body } = this.state;
     const disableSubmit =
       author === '' || body === '' || category === '' || title === '';
 
-    /* Redirect to root if submitted */
-    if (redirect) {
-      return <Redirect to={redirect} />;
+    if (id && author === undefined) {
+      return <Error404 message={'This post does not exist.'} />;
     }
 
     return (
       <form className="ui form" onSubmit={this.handleSubmit}>
         <div className="ui raised very padded text container segments">
           <div className="ui segment">
-            <h2>{form === 'add' ? 'Add New' : 'Edit'} Post</h2>
+            <h2>{id === undefined ? 'Add New' : 'Edit'} Post</h2>
           </div>
           <div className="ui segment">
             <div className="field">
@@ -87,7 +88,7 @@ class PostForm extends Component {
               <select
                 className="ui dropdown"
                 name="category"
-                disabled={form === 'edit'}
+                disabled={id !== undefined}
                 onChange={this.handleChange}
                 value={category}
               >
@@ -102,7 +103,7 @@ class PostForm extends Component {
               <input
                 type="text"
                 name="author"
-                disabled={form === 'edit'}
+                disabled={id !== undefined}
                 placeholder="Enter Your Name Here"
                 onChange={this.handleChange}
                 value={author}
@@ -127,13 +128,26 @@ class PostForm extends Component {
                 value={body}
               ></textarea>
             </div>
-            <button
-              type="submit"
-              className="ui fluid blue button"
-              disabled={disableSubmit}
-            >
-              Submit
-            </button>
+            <div className="ui grid container">
+              <div className="ui eight wide column">
+                <button
+                  type="submit"
+                  className="ui fluid blue button"
+                  disabled={disableSubmit}
+                >
+                  Submit
+                </button>
+              </div>
+              <div className="ui eight wide column">
+                <button
+                  type="button"
+                  className="ui fluid blue button"
+                  onClick={() => this.props.history.goBack()}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </form>
@@ -141,35 +155,21 @@ class PostForm extends Component {
   }
 }
 
-const mapStateToProps = ({ posts }, { match }) => {
+const mapStateToProps = (state, { match }) => {
   const {
     params: { id },
   } = match;
 
-  if (posts.length) {
-    const filteredPosts = posts.filter((post) => post.id === id);
-
-    if (filteredPosts.length) {
-      return {
-        form: 'edit',
-        post: {
-          id: filteredPosts[0].id,
-          category: filteredPosts[0].category,
-          author: filteredPosts[0].author,
-          title: filteredPosts[0].title,
-          body: filteredPosts[0].body,
-        },
-      };
-    }
-  }
-
   return {
-    form: 'add',
-    post: {},
+    id,
   };
 };
 
-export default connect(mapStateToProps, {
-  handleAddPost,
-  handleEditPost,
-})(PostForm);
+const mapDispatchToProps = (dispatch, props) => {
+  return {
+    handleAddPost: (post) => dispatch(handleAddPost(post, props)),
+    handleEditPost: (id, post) => dispatch(handleEditPost(id, post)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PostForm);

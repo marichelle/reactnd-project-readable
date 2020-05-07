@@ -133,14 +133,22 @@ export const getComments = (id) =>
 // author - [String]
 // parentId - Should match a post id in the database.
 export const addComment = (comment) => {
+  const newComment = {
+    id: generateUID(),
+    timestamp: Date.now(),
+    ...comment,
+  };
+
   return fetch(`${api}/comments`, {
     method: 'POST',
     headers: {
       ...headers,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(comment),
-  });
+    body: JSON.stringify(newComment),
+  })
+    .then((res) => res.json())
+    .then((data) => data);
 };
 
 // GET /comments/:id

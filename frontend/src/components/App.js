@@ -21,12 +21,12 @@ class App extends Component {
         <>
           <Header />
           <Switch>
+            <Route path="/404" exact component={Error404} />
             <Route path="/post/edit/:id" component={PostForm} />
             <Route path="/post/add" exact component={PostForm} />
             <Route path="/:category/:id" component={PostDetail} />
             <Route path="/:category" component={Dashboard} />
             <Route path="/" exact component={Dashboard} />
-            <Route component={Error404} />
           </Switch>
         </>
       </Router>

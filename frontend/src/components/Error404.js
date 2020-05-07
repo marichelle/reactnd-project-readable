@@ -1,13 +1,15 @@
 import React from 'react';
 
-export default () => {
+export default ({ message }) => {
   return (
-    <div className="ui one statistics">
-      <div className="ui center aligned red statistic">
-        <div className="value">
-          <i className="exclamation triangle icon"></i>
-        </div>
-        <div className="label">404 Error</div>
+    <div className="ui center aligned container">
+      <div className="ui compact error message">
+        <div className="header">Error Found</div>
+        {message === undefined ? (
+          <p>This post does not exist.</p>
+        ) : (
+          <p>{message}</p>
+        )}
       </div>
     </div>
   );
