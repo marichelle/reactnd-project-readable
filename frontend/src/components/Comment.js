@@ -1,10 +1,25 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { handleAddVoteToComment, handleDeleteComment } from '../actions/shared';
+import {
+  handleAddVoteToComment,
+  handleDeleteComment,
+  handleEditComment,
+} from '../actions/shared';
 import { formatDate } from '../utils/helper';
 
 class Comment extends Component {
+  state = {
+    body: '',
+    edit: false,
+  };
+
+  componentDidMount() {
+    this.setState(() => ({
+      body: this.props.body,
+    }));
+  }
+
   handleAddVoteToComment = (e, vote) => {
     e.preventDefault();
 
@@ -17,8 +32,37 @@ class Comment extends Component {
     this.props.handleDeleteComment(this.props.id);
   };
 
+  handleChange = (e) => {
+    const field = e.target.name;
+    const text = e.target.value;
+
+    this.setState(() => ({
+      [field]: text,
+    }));
+  };
+
+  handleEditComment = (e) => {
+    e.preventDefault();
+
+    this.setState((prevState) => ({
+      edit: !prevState.edit,
+    }));
+  };
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+
+    this.props.handleEditComment(this.props.id, this.state.body);
+
+    // reset state
+    this.setState(() => ({
+      edit: false,
+    }));
+  };
+
   render() {
-    const { timestamp, author, body, id, voteScore } = this.props;
+    const { author, body, id, timestamp, voteScore } = this.props;
+    const { edit } = this.state;
 
     return (
       <div key={id} className="comment">
@@ -46,7 +90,7 @@ class Comment extends Component {
               <i className="thumbs down outline icon"></i>
               Dislike
             </a>
-            <a href="/#">
+            <a href="/#" onClick={this.handleEditComment}>
               <i className="edit outline icon"></i>
               Edit
             </a>
@@ -55,6 +99,23 @@ class Comment extends Component {
               Delete
             </a>
           </div>
+          {edit === true && (
+            <form className="ui reply form">
+              <div className="field">
+                <textarea
+                  name="body"
+                  defaultValue={body}
+                  onChange={this.handleChange}
+                />
+              </div>
+              <button className="ui primary button" onClick={this.handleSubmit}>
+                Save
+              </button>
+              <button className="ui button" onClick={this.handleEditComment}>
+                Cancel
+              </button>
+            </form>
+          )}
         </div>
       </div>
     );
@@ -64,4 +125,5 @@ class Comment extends Component {
 export default connect(null, {
   handleAddVoteToComment,
   handleDeleteComment,
+  handleEditComment,
 })(Comment);

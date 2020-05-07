@@ -174,8 +174,13 @@ export const addVoteToComment = (id, vote) =>
 // PUT /comments/:id
 // timestamp - timestamp. Get this however you want.
 // body - [String]
-export const editComment = (id, comment) =>
-  fetch(`${api}/comments/${id}`, {
+export const editComment = (id, body) => {
+  const comment = {
+    timestamp: Date.now(),
+    body,
+  };
+
+  return fetch(`${api}/comments/${id}`, {
     method: 'PUT',
     headers: {
       ...headers,
@@ -183,6 +188,7 @@ export const editComment = (id, comment) =>
     },
     body: JSON.stringify(comment),
   });
+};
 
 // DELETE /comments/:id
 export const deleteComment = (id) =>

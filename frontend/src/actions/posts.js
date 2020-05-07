@@ -58,12 +58,12 @@ export const deletePost = (id) => {
   };
 };
 
-export const editComment = (id, comment) => {
+export const editComment = (id, body) => {
   return {
     type: EDIT_COMMENT,
     payload: {
       id,
-      comment,
+      body,
     },
   };
 };

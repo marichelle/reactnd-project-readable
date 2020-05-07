@@ -70,11 +70,21 @@ export default function posts(posts = [], action) {
       return posts.filter((post) => post.id !== payload.id);
 
     case EDIT_COMMENT:
-      return posts;
+      return posts.map((post) => ({
+        ...post,
+        comments: post.comments.map((comment) =>
+          comment.id !== payload.id
+            ? comment
+            : {
+                ...comment,
+                body: payload.body,
+              }
+        ),
+      }));
 
     case EDIT_POST:
-      return posts.map((p) =>
-        p.id !== payload.id ? p : { ...p, ...payload.post }
+      return posts.map((post) =>
+        post.id !== payload.id ? post : { ...post, ...payload.post }
       );
 
     case FETCH_POSTS:

@@ -84,11 +84,11 @@ export function handleAddVoteToComment(id, vote) {
   };
 }
 
-export function handleEditComment(id, comment) {
+export function handleEditComment(id, body) {
+  console.log(id, body);
+
   return (dispatch) => {
-    return editCommentAPI(id, comment).then(() =>
-      dispatch(editComment(id, comment))
-    );
+    return editCommentAPI(id, body).then(() => dispatch(editComment(id, body)));
   };
 }
 
